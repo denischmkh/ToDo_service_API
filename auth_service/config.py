@@ -4,5 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-APP_SERVICE_V1_URL = os.getenv('APP_SERVICE_URL')
 MONGO_SERVICE_V1_URL = os.getenv('MONGO_SERVICE_URL')
+
+JWT_SECRET_KEY=os.getenv('JWT_SECRET_KEY')
