@@ -7,9 +7,10 @@
       <sourceFolder url="file://$MODULE_DIR$/consumer_sevice" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/mongo_service" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/practice" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv/Scripts/python" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.11 (Image_Render_Service) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
