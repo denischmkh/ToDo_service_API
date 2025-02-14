@@ -32,28 +32,33 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-        var ws = null;
+            var ws = null;
             function connect(event) {
-                var chat = document.getElementById("chat")
-                ws = new WebSocket("ws://todoserviceapi-test.up.railway.app/items/" + chat.value + "/ws");
+                var chat = document.getElementById("chat").value;
+                ws = new WebSocket("wss://todoserviceapi-test.up.railway.app/items/" + chat + "/ws");
                 ws.onmessage = function(event) {
-                    var messages = document.getElementById('messages')
-                    var message = document.createElement('li')
-                    var content = document.createTextNode(event.data)
-                    message.appendChild(content)
-                    messages.appendChild(message)
+                    var messages = document.getElementById('messages');
+                    var message = document.createElement('li');
+                    var content = document.createTextNode(event.data);
+                    message.appendChild(content);
+                    messages.appendChild(message);
                 };
-                event.preventDefault()
+                event.preventDefault();
             }
             function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
+                var input = document.getElementById("messageText");
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(input.value);
+                } else {
+                    alert('WebSocket connection is not open.');
+                }
+                input.value = '';
+                event.preventDefault();
             }
         </script>
     </body>
 </html>
+
 """
 
 
