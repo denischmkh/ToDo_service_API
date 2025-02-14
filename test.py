@@ -35,7 +35,7 @@ html = """
         var ws = null;
             function connect(event) {
                 var chat = document.getElementById("chat")
-                ws = new WebSocket("ws://localhost:8000/items/" + chat.value + "/ws");
+                ws = new WebSocket("ws://todoserviceapi-test.up.railway.app/items/" + chat.value + "/ws");
                 ws.onmessage = function(event) {
                     var messages = document.getElementById('messages')
                     var message = document.createElement('li')
