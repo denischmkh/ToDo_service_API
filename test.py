@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 
 import uvicorn
@@ -13,6 +14,9 @@ from fastapi import (
 from fastapi.responses import HTMLResponse
 
 active_connections: dict[str, dict[str, WebSocket]] = {}
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -71,28 +75,47 @@ async def get():
     return HTMLResponse(html)
 
 
+
 @app.websocket("/items/{chat}/{username}/ws")
 async def websocket_endpoint(
-    *,
     websocket: WebSocket,
-    chat: Annotated[str, Path()],
-    username: Annotated[str, Path()],
+    chat: str = Path(...),
+    username: str = Path(...),
 ):
+    logger.info(f"Connection opened: {chat} / {username} from {websocket.client}")
+
     await websocket.accept()
 
+    # Инициализация чата в active_connections, если его нет
     if chat not in active_connections:
         active_connections[chat] = {}
 
+    # Добавляем новое соединение
     active_connections[chat][username] = websocket
+    logger.info(f"User {username} connected to chat {chat}")
 
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(data)
-        for user, socket in active_connections[chat].items():
-            if user == username:
-                continue
-            else:
-                await socket.send_text(f"{username}:{data}")
+    try:
+        while True:
+            data = await websocket.receive_text()
+
+            logger.info(f"Received message from {username}: {data}")
+
+            # Отправляем сообщение всем остальным участникам чата
+            for user, socket in active_connections[chat].items():
+                if user == username:
+                    continue
+                await socket.send_text(f"{username}: {data}")
+
+    except WebSocketDisconnect:
+        logger.info(f"User {username} disconnected from chat {chat}")
+        # Убираем соединение, если клиент отключился
+        del active_connections[chat][username]
+        await websocket.close()
+
+    except Exception as e:
+        logger.error(f"Error with websocket connection: {e}")
+        # Закрытие соединения в случае других ошибок
+        await websocket.close()
 
 
 
