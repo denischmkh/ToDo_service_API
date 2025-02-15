@@ -12,6 +12,7 @@ from fastapi import (
     status, Path,
 )
 from fastapi.responses import HTMLResponse
+from starlette.websockets import WebSocketDisconnect
 
 active_connections: dict[str, dict[str, WebSocket]] = {}
 
@@ -51,6 +52,7 @@ html = """
                     message.appendChild(content);
                     messages.appendChild(message);
                 };
+                alert("Successfully connected!")
                 event.preventDefault();
             }
             function sendMessage(event) {
@@ -82,7 +84,7 @@ async def websocket_endpoint(
     chat: str = Path(...),
     username: str = Path(...),
 ):
-    logger.info(f"Connection opened: {chat} / {username} from {websocket.client}")
+    logger.error(f"Connection opened: {chat} / {username} from {websocket.client}")
 
     await websocket.accept()
 
