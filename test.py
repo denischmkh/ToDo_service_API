@@ -76,10 +76,7 @@ async def websocket_endpoint(
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        await websocket.send_text(
-            f"message in {chat}"
-        )
-        await websocket.send_text(f"Message text was: {data}")
+        await websocket.send_text(data)
 
 if __name__ == '__main__':
     uvicorn.run(app)
